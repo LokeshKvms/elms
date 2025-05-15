@@ -46,7 +46,7 @@ require COMMON_PATH . '/header.php';
 
   <div class="row row-cols-1 row-cols-md-3 g-4">
     <div class="col">
-      <a href=<?= BASE_URL . "/admin/approve_employee.php" ?> class="text-decoration-none">
+      <a href=<?= BASE_URL . "/admin/manage_employees.php" ?> class="text-decoration-none">
         <div class="card text-center border-dark border-3">
           <div class="card-body py-3">
             <h6 class="card-title mb-2">Total Employees</h6>
@@ -58,7 +58,7 @@ require COMMON_PATH . '/header.php';
     </div>
 
     <div class="col">
-      <a href=<?= BASE_URL . "/admin/approve_employee.php" ?> class="text-decoration-none">
+      <a href=<?= BASE_URL . "/admin/manage_employees.php" ?> class="text-decoration-none">
         <div class="card text-center border-dark border-3 shadow-sm">
           <div class="card-body py-3">
             <h6 class="card-title mb-2">Employees Approved</h6>
@@ -70,7 +70,7 @@ require COMMON_PATH . '/header.php';
     </div>
 
     <div class="col">
-      <a href=<?= BASE_URL . "/admin/approve_employee.php" ?> class="text-decoration-none">
+      <a href=<?= BASE_URL . "/admin/manage_employees.php" ?> class="text-decoration-none">
         <div class="card text-center border-dark border-3 shadow-sm">
           <div class="card-body py-3">
             <h6 class="card-title mb-2">Employees Pending</h6>
@@ -82,7 +82,7 @@ require COMMON_PATH . '/header.php';
     </div>
 
     <div class="col">
-      <a href=<?= BASE_URL . "/admin/approve_leave.php" ?> class="text-decoration-none">
+      <a href=<?= BASE_URL . "/admin/manage_leaves.php" ?> class="text-decoration-none">
         <div class="card text-center border-dark border-3 shadow-sm">
           <div class="card-body py-3">
             <h6 class="card-title mb-2">Total Leave Requests</h6>
@@ -94,7 +94,7 @@ require COMMON_PATH . '/header.php';
     </div>
 
     <div class="col">
-      <a href=<?= BASE_URL . "/admin/approve_leave.php" ?> class="text-decoration-none">
+      <a href=<?= BASE_URL . "/admin/manage_leaves.php" ?> class="text-decoration-none">
         <div class="card text-center border-dark border-3 shadow-sm">
           <div class="card-body py-3">
             <h6 class="card-title mb-2">Pending Leave Approvals</h6>
@@ -106,7 +106,7 @@ require COMMON_PATH . '/header.php';
     </div>
 
     <div class="col">
-      <a href=<?= BASE_URL . "/admin/manage_department.php" ?> class="text-decoration-none">
+      <a href=<?= BASE_URL . "/admin/manage_departments.php" ?> class="text-decoration-none">
         <div class="card text-center border-dark border-3 shadow-sm">
           <div class="card-body py-3">
             <h6 class="card-title mb-2">Total Departments</h6>

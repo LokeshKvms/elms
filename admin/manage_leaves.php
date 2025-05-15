@@ -44,7 +44,7 @@ if (isset($_GET['action'], $_GET['id'])) {
             }
 
 
-            header("Location: approve_leave.php");
+            header("Location: manage_leaves.php");
             exit;
         }
     }
@@ -148,8 +148,8 @@ include COMMON_PATH . '/header.php';
                         <td><?= $row['reason']; ?></td>
                         <td><?= $row['requested_at']; ?></td>
                         <td>
-                            <a href="approve_leave.php?action=approve&id=<?= $row['request_id']; ?>" class="btn btn-success btn-sm">Approve</a>
-                            <a href="approve_leave.php?action=reject&id=<?= $row['request_id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Reject this leave?');">Reject</a>
+                            <a href="manage_leaves.php?action=approve&id=<?= $row['request_id']; ?>" class="btn btn-success btn-sm">Approve</a>
+                            <a href="manage_leaves.php?action=reject&id=<?= $row['request_id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Reject this leave?');">Reject</a>
                         </td>
                     </tr>
                 <?php endwhile; ?>

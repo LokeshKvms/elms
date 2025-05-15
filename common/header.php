@@ -139,16 +139,16 @@ $dashboard = $role === 'admin' ? 'Admin Portal' : 'Employee Portal';
       <i class="fas fa-home me-2"></i>Dashboard
     </a>
     <!-- New: Approve Employee -->
-    <a href="<?= BASE_URL . '/admin/approve_employee.php' ?>" class="sidebar-link">
+    <a href="<?= BASE_URL . '/admin/manage_employees.php' ?>" class="sidebar-link">
       <i class="fas fa-user-check me-2"></i>Employees
     </a>
 
-    <a href="<?= BASE_URL . '/admin/manage_department.php' ?>" class="sidebar-link">
+    <a href="<?= BASE_URL . '/admin/manage_departments.php' ?>" class="sidebar-link">
       <i class="fas fa-building me-2"></i>Manage Departments
     </a>
 
     <!-- Admin’s leave‑review link -->
-    <a href="<?= BASE_URL . '/admin/approve_leave.php' ?>" class="sidebar-link">
+    <a href="<?= BASE_URL . '/admin/manage_leaves.php' ?>" class="sidebar-link">
       <i class="fas fa-check-circle me-2"></i>Manage Leaves
     </a>
     <a href="<?= BASE_URL . '/common/holidays.php' ?>" class="sidebar-link">
