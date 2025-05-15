@@ -42,14 +42,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 if (isset($_GET['delete'])) {
     $id = (int) $_GET['delete'];
-    if($id===9){
+    if ($id === 9) {
         $_SESSION['toast'] = [
-            'type' =>'danger',
+            'type' => 'danger',
             'message' => 'This is default department for unassigned ones. Cannot delete it'
         ];
         header("Location: " . $_SERVER['PHP_SELF']);
         exit;
-
     }
     $conn->query("UPDATE employees SET department_id=9 WHERE department_id=$id");
     $success = $conn->query("DELETE FROM departments WHERE department_id = $id");
@@ -92,6 +91,9 @@ include COMMON_PATH . '/header.php';
 
     <!-- JSZip (required for Excel export) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- Include SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         .dataTables_filter {
             margin-bottom: 1rem !important;
@@ -240,7 +242,25 @@ include COMMON_PATH . '/header.php';
             dom: 'Bfrtip',
             buttons: [{
                 extend: 'excel',
-                text: 'Export to Excel'
+                text: 'Export to Excel',
+                action: function(e, dt, button, config) {
+                    var rowCount = dt.rows({
+                        search: 'applied'
+                    }).count();
+
+                    if (rowCount === 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'No data available to export',
+                            toast: true,
+                            position: 'top-end',
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, button, config);
+                    }
+                }
             }]
         });
     </script>
