@@ -42,6 +42,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 if (isset($_GET['delete'])) {
     $id = (int) $_GET['delete'];
+    if($id===9){
+        $_SESSION['toast'] = [
+            'type' =>'danger',
+            'message' => 'This is default department for unassigned ones. Cannot delete it'
+        ];
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
+
+    }
+    $conn->query("UPDATE employees SET department_id=9 WHERE department_id=$id");
     $success = $conn->query("DELETE FROM departments WHERE department_id = $id");
     $_SESSION['toast'] = [
         'type' => $success ? 'success' : 'danger',

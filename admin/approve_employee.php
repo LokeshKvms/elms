@@ -269,11 +269,11 @@ include COMMON_PATH . '/header.php';
                             $isActive = ($emp['status'] === 'active');
                             $approveBtn = $isActive
                                 ? "<label class='form-label'>Approved</label>"
-                                : "<a href='?approve={$emp['employee_id']}' class='btn btn-success btn-sm'>Approve</a>";
+                                : "<a href='?approve={$emp['employee_id']}' class='btn btn-success btn-sm mb-2'>Approve</a>";
 
                             $rejectBtn = $isActive
                                 ? ""
-                                : "<button class='btn btn-danger btn-sm rejectBtn' data-id='" . $emp['employee_id'] . "'>Reject</button>";
+                                : "<button class='btn btn-danger btn-sm rejectBtn mb-2' data-id='" . $emp['employee_id'] . "'>Reject</button>";
 
 
                             echo "<tr style='text-align:center'>
