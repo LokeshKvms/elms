@@ -1,8 +1,9 @@
 <?php
 session_start();
 require dirname(__DIR__) . '/config.php';
-require INCLUDES_PATH.'/db.php';
-require INCLUDES_PATH.'/mail.php';
+require INCLUDES_PATH . '/db.php';
+require INCLUDES_PATH . '/mail.php';
+require INCLUDES_PATH . '/toast.php';
 
 if (isset($_SESSION['role'])) {
   if ($_SESSION['role'] === 'admin') {
@@ -23,7 +24,7 @@ if (isset($_POST['login'])) {
   $responseData = json_decode($verifyResponse);
 
   if (!$responseData->success) {
-    $_SESSION['error'] = 'Please complete the CAPTCHA.';
+    toast('error','Please complete the captcha');
     header("Location: login.php");
     exit;
   }
@@ -40,15 +41,15 @@ if (isset($_POST['login'])) {
     $user = $result->fetch_assoc();
 
     if ($role === 'employee' && $email === 'admin@gmail.com') {
-      $_SESSION['error'] = 'User not found.';
+      toast('error','User not found');
       header("Location: login.php");
       exit;
-    } else if (password_verify($password,$user['password'])) {
+    } else if (password_verify($password, $user['password'])) {
       if ($role === 'admin' && $email === 'admin@gmail.com') {
         $_SESSION['user_id'] = $user['employee_id'];
         $_SESSION['name'] = $user['name'];
         $_SESSION['role'] = 'admin';
-        header("Location: ".BASE_URL."/admin/admin_dashboard.php");
+        header("Location: " . BASE_URL . "/admin/admin_dashboard.php");
         exit;
       } else if ($user['status'] === 'active') {
         $_SESSION['user_id'] = $user['employee_id'];
@@ -69,22 +70,22 @@ if (isset($_POST['login'])) {
           header("Location: verify_otp.php");
           exit;
         } catch (Exception $e) {
-          $_SESSION['error'] = 'OTP mail failed: ' . $mail->ErrorInfo;
+          toast('error','OTP mail failed');
           header("Location: login.php");
           exit;
         }
       } else {
-        $_SESSION['error'] = 'Account pending approval by manager.';
+        toast('warning', 'Account is not verified yet.');
         header("Location: login.php");
         exit;
       }
     } else {
-      $_SESSION['error'] = 'Incorrect password.';
+      toast('error', 'Incorrect password');
       header("Location: login.php");
       exit;
     }
   } else {
-    $_SESSION['error'] = 'User not found.';
+    toast('error','User not found');
     header("Location: login.php");
     exit;
   }
@@ -120,27 +121,6 @@ if (isset($_POST['login'])) {
         emailInput.style = "background-color:#cccccc";
         emailInput.readOnly = true;
       }
-    }
-
-    function showToast(message, type) {
-      const toastElement = document.createElement('div');
-      toastElement.classList.add('toast', 'position-fixed', 'top-0', 'end-0', 'm-2', 'fade', 'show');
-      if (type === 'success') {
-        toastElement.classList.add('bg-success');
-      } else if (type === 'warning') {
-        toastElement.classList.add('bg-warning');
-      } else {
-        toastElement.classList.add('bg-danger');
-      }
-      toastElement.innerHTML = `
-                <div class="toast-body fw-semibold border border-1 rounded">${message}</div>
-            `;
-      document.body.appendChild(toastElement);
-
-      setTimeout(() => {
-        toastElement.classList.remove('show');
-        setTimeout(() => toastElement.remove(), 300);
-      }, 3000);
     }
   </script>
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -224,12 +204,6 @@ if (isset($_POST['login'])) {
       </p>
     </div>
   </div>
-  <?php
-  if (isset($_SESSION['error'])) {
-    echo "<script>showToast('" . $_SESSION['error'] . "', 'danger');</script>";
-    unset($_SESSION['error']);
-  }
-  ?>
 
 </body>
 
