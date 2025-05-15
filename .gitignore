@@ -1,0 +1,56 @@
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE/editor folders
+.vscode/
+.idea/
+
+# Ignore composer files (if vendor folder shouldn't be committed)
+vendor/
+
+# Ignore environment and config files
+.env
+.env.local
+config.php
+config/*.php
+
+# Ignore logs and temporary files
+*.log
+*.cache
+*.tmp
+
+# Ignore session files (if stored on disk)
+sessions/
+
+# Ignore uploaded files
+uploads/
+files/
+
+# Ignore node modules if using frontend tooling
+node_modules/
+
+# Ignore PHPUnit cache
+.phpunit.result.cache
+
+# Ignore backup files
+*.bak
+*.swp
+*.swo
+*.orig
+
+# Ignore OS generated files
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# Ignore coverage reports
+coverage/
+
+# Ignore database dumps
+*.sql
+*.sqlite
+
+# Ignore build/output folders
+dist/
+build/

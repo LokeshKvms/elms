@@ -1,0 +1,16 @@
+<FilesMatch "\.(env|gitignore)$">
+    # Require ip 127.0.0.1
+    # Require ip ::2
+    # Require ip 192.168.1.27
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "(composer\.json|composer\.lock|config\.php)$">
+    # Require ip 127.0.0.1
+    # Require ip ::2
+    # Require ip 192.168.1.27
+    Require all denied
+</FilesMatch>
+
+RewriteEngine On
+RewriteRule ^(includes|vendor|\.git|\.vscode)/ - [F,L]
