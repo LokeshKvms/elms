@@ -2,15 +2,13 @@
 session_start();
 require dirname(__DIR__) . '/config.php';
 require INCLUDES_PATH . '/db.php';
+require INCLUDES_PATH . '/toast.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: " . BASE_URL . "/auth/login.php");
     exit;
 }
 
-// Toast message
-$toast = $_SESSION['toast'] ?? null;
-unset($_SESSION['toast']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $department_name = $_POST['department_name'];
@@ -21,19 +19,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("si", $department_name, $id);
         $success = $stmt->execute();
         $stmt->close();
-        $_SESSION['toast'] = [
-            'type' => $success ? 'success' : 'danger',
-            'message' => $success ? 'Department updated successfully.' : 'Update failed.'
-        ];
+
+        toast($success ? 'info' : 'error', $success ? 'Department updated successfully.' : 'Update failed.');
     } else {
         $stmt = $conn->prepare("INSERT INTO departments (name) VALUES (?)");
         $stmt->bind_param("s", $department_name);
         $success = $stmt->execute();
         $stmt->close();
-        $_SESSION['toast'] = [
-            'type' => $success ? 'success' : 'danger',
-            'message' => $success ? 'Department added successfully.' : 'Insert failed.'
-        ];
+
+        toast($success ? 'success' : 'error', $success ? 'Department added successfully.' : 'Insert failed.');
     }
 
     header("Location: " . $_SERVER['PHP_SELF']);
@@ -43,19 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if (isset($_GET['delete'])) {
     $id = (int) $_GET['delete'];
     if ($id === 9) {
-        $_SESSION['toast'] = [
-            'type' => 'danger',
-            'message' => 'This is default department for unassigned ones. Cannot delete it'
-        ];
+        
+        toast('error', 'This is default department for unassigned ones. Cannot delete it');
+        
         header("Location: " . $_SERVER['PHP_SELF']);
         exit;
     }
     $conn->query("UPDATE employees SET department_id=9 WHERE department_id=$id");
     $success = $conn->query("DELETE FROM departments WHERE department_id = $id");
-    $_SESSION['toast'] = [
-        'type' => $success ? 'success' : 'danger',
-        'message' => $success ? 'Department deleted successfully.' : 'Delete failed.'
-    ];
+    
+    toast($success ? 'success' : 'error', $success ? 'Department deleted successfully.' : 'Delete failed.');
     header("Location: " . $_SERVER['PHP_SELF']);
     exit;
 }
@@ -138,13 +129,6 @@ include COMMON_PATH . '/header.php';
 
     <!-- Toasts -->
     <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
-        <div id="toastBox" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body" id="toastMsg">Loading...</div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-
         <div id="confirmToast" class="toast align-items-center text-bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex justify-content-between">
                 <div class="toast-body fw-semibold">Delete this Department?</div>
@@ -227,16 +211,6 @@ include COMMON_PATH . '/header.php';
             new bootstrap.Toast(toastEl).show();
         }
 
-        <?php if ($toast): ?>
-            window.addEventListener('DOMContentLoaded', () => {
-                const toastBox = document.getElementById('toastBox');
-                const toastMsg = document.getElementById('toastMsg');
-                toastBox.classList.remove('text-bg-primary', 'text-bg-success', 'text-bg-danger', 'text-bg-warning');
-                toastBox.classList.add('text-bg-<?= $toast['type'] ?>');
-                toastMsg.textContent = "<?= addslashes($toast['message']) ?>";
-                new bootstrap.Toast(toastBox).show();
-            });
-        <?php endif; ?>
         $('#theTable').DataTable({
             lengthChange: false,
             dom: 'Bfrtip',

@@ -2,6 +2,7 @@
 session_start();
 require dirname(__DIR__) . '/config.php';
 require INCLUDES_PATH . '/db.php';
+require INCLUDES_PATH . '/toast.php';
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header("Location: " . BASE_URL . "/auth/login.php");
@@ -35,12 +36,12 @@ if (isset($_GET['action'], $_GET['id'])) {
                     SET used = used - $restoreDays 
                     WHERE employee_id = {$req['employee_id']} AND leave_type_id = {$req['leave_type_id']}
                   ");
-                    $_SESSION['toast_message'] = ['message' => 'Leave request rejected and balance restored!', 'type' => 'danger'];
+                    toast('warning','Leave request rejected.');
                 } else {
-                    $_SESSION['toast_message'] = ['message' => 'Leave request approved!', 'type' => 'success'];
+                    toast('success', 'Leave request approved.');
                 }
             } else {
-                $_SESSION['toast_message'] = ['message' => 'Failed to update leave request.', 'type' => 'danger'];
+                toast('error', 'Failed to update leave request.');
             }
 
 
@@ -94,20 +95,6 @@ include COMMON_PATH . '/header.php';
 </head>
 
 <body>
-
-    <!-- Toast Message -->
-    <?php if (isset($_SESSION['toast_message'])): ?>
-        <div id="toast" class="position-fixed top-0 end-0 p-3" style="z-index: 9999;">
-            <div class="toast align-items-center text-white bg-<?= $_SESSION['toast_message']['type']; ?> border-0 show" role="alert">
-                <div class="d-flex">
-                    <div class="toast-body">
-                        <?= $_SESSION['toast_message']['message']; ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <?php unset($_SESSION['toast_message']); ?>
-    <?php endif; ?>
 
     <h3 class="mb-3 pt-4">Pending Leave Requests</h3>
 
@@ -300,23 +287,6 @@ include COMMON_PATH . '/header.php';
             }
         });
 
-        const toastEl = document.querySelector('.toast');
-        if (toastEl) {
-            const toast = new bootstrap.Toast(toastEl, {
-                delay: 2000
-            });
-            toast.show();
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const toastEl = document.querySelector('.toast');
-            if (toastEl) {
-                const toast = new bootstrap.Toast(toastEl, {
-                    delay: 2000
-                });
-                toast.show();
-            }
-        });
     </script>
 </body>
 

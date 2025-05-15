@@ -4,6 +4,8 @@ require dirname(__DIR__) . '/config.php';
 require INCLUDES_PATH . '/db.php';
 require INCLUDES_PATH . '/mail.php';
 
+require INCLUDES_PATH . '/toast.php';
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header("Location: " . BASE_URL . "/auth/login.php");
     exit;
@@ -21,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "console.log('Editing employee with ID:'', $(this).data('id'));";
         $stmt = $conn->prepare("UPDATE Employees SET name=?, department_id=?, position=?, hire_date=? WHERE employee_id=?");
         $stmt->bind_param("sissi", $name, $dept, $pos, $date, $id);
-        $_SESSION['toast'] = ['msg' => 'Employee updated successfully.', 'class' => 'bg-info'];
+        toast('info','Employee updated successfully');
         $stmt->execute();
         $stmt->close();
     } else {
@@ -31,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $checkStmt->store_result();
 
         if ($checkStmt->num_rows > 0) {
-            $_SESSION['toast'] = ['msg' => 'Email already exists. Please use a different one.', 'class' => 'bg-danger'];
+            toast('error','Email already exists');
             $checkStmt->close();
             header("Location: " . BASE_URL . "/admin/manage_employees.php");
             exit;
@@ -69,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         sendMail($email, $subject, $body);
 
-        $_SESSION['toast'] = ['msg' => 'Employee added successfully.', 'class' => 'bg-success'];
+        toast('success', 'Employee added successfully');
     }
 
     header("Location: " . BASE_URL . "/admin/manage_employees.php");
@@ -82,7 +84,7 @@ if (isset($_GET['delete'])) {
     $conn->query("DELETE FROM leave_balances WHERE employee_id = $id");
     $conn->query("DELETE FROM Employees WHERE employee_id = $id");
 
-    $_SESSION['toast'] = ['msg' => 'Employee deleted.', 'class' => 'bg-danger'];
+    toast('warning', 'Employee deleted.');
     header("Location: " . BASE_URL . "/admin/manage_employees.php");
     exit;
 }
@@ -118,7 +120,7 @@ if (isset($_GET['approve'])) {
         $balanceStmt->execute();
     }
 
-    $_SESSION['toast'] = ['msg' => 'Employee approved.', 'class' => 'bg-success'];
+    toast('success', 'Employee account approved.');
     header("Location: " . BASE_URL . "/admin/manage_employees.php");
     exit;
 }
@@ -132,7 +134,7 @@ if (isset($_GET['reject'])) {
     $body = "<h4>Dear {$emp['name']},</h4><p>Your employment application has been rejected. We wish you all the best.</p>";
     sendMail($emp['email'], $subject, $body);
 
-    $_SESSION['toast'] = ['msg' => 'Employee rejected.', 'class' => 'bg-danger'];
+    toast('warning', 'Employee account rejected.');
     header("Location: " . BASE_URL . "/admin/manage_employees.php");
     exit;
 }
@@ -319,15 +321,6 @@ include COMMON_PATH . '/header.php';
         </div>
     </main>
 
-    <!-- Toast Notification -->
-    <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999">
-        <div id="toastMsg" class="toast align-items-center text-white bg-success border-0" role="alert">
-            <div class="d-flex">
-                <div class="toast-body" id="toastBody">Action successful.</div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-            </div>
-        </div>
-    </div>
 
     <!-- Confirm Toast -->
     <div id="confirmToast" class="toast align-items-center text-bg-warning border-0 position-fixed top-0 end-0 m-3" style="z-index:9999" role="alert" aria-live="assertive" aria-atomic="true">
@@ -353,7 +346,7 @@ include COMMON_PATH . '/header.php';
                     [5, 'asc']
                 ],
                 pageLength: 5,
-                dom: 'Bfrtip', // Enables export buttons
+                dom: 'Bfrtip', 
                 buttons: [{
                     extend: 'excel',
                     text: 'Export to Excel',
@@ -383,8 +376,7 @@ include COMMON_PATH . '/header.php';
                 $('#employeeModal').modal('hide');
             });
 
-            const toastMessage = '<?= $_SESSION['toast']['msg'] ?? '' ?>';
-            const toastClass = '<?= $_SESSION['toast']['class'] ?? '' ?>';
+
 
             let confirmActionUrl = '#';
 
@@ -406,19 +398,6 @@ include COMMON_PATH . '/header.php';
                 const empId = $(this).data('id');
                 showConfirmToast('Delete this employee permanently?', '?delete=' + empId);
             });
-
-            if (toastMessage) {
-                $('#toastBody').text(toastMessage);
-                $('#toastMsg').removeClass('bg-success bg-info bg-danger')
-                    .addClass(toastClass);
-
-                const toast = new bootstrap.Toast(document.getElementById('toastMsg'), {
-                    delay: 3000
-                });
-                toast.show();
-
-                <?php unset($_SESSION['toast']); ?>
-            }
 
             $(document).ready(function() {
                 $(document).on('click', '.editBtn', function() {
