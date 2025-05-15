@@ -174,6 +174,15 @@ include COMMON_PATH . '/header.php';
         .d-flex.justify-content-between {
             align-items: center;
         }
+
+        .btn{
+            margin-bottom: 6px !important;
+        }
+
+        .rejectBtn{
+            padding-left: 14px !important;
+            padding-right: 14px !important;
+        }
     </style>
 </head>
 
