@@ -92,6 +92,7 @@ $dashboard = $role === 'admin' ? 'Admin Portal' : 'Employee Portal';
     window.location.href = "<?= BASE_URL . '/auth/logout.php' ?>";
   }, timeout);
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 

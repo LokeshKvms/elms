@@ -232,7 +232,25 @@ include COMMON_PATH . '/header.php';
                 dom: 'Bfrtip',
                 buttons: [{
                     extend: 'excel',
-                    text: 'Export to Excel'
+                    text: 'Export to Excel',
+                    action: function(e, dt, button, config) {
+                        var rowCount = dt.rows({
+                            search: 'applied'
+                        }).count();
+
+                        if (rowCount === 0) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'No data available to export',
+                                toast: true,
+                                position: 'top-end',
+                                timer: 3000,
+                                showConfirmButton: false
+                            });
+                        } else {
+                            $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, button, config);
+                        }
+                    }
                 }],
                 drawCallback: function() {
                     $('#theTable td').addClass('bg-transparent');
@@ -246,7 +264,25 @@ include COMMON_PATH . '/header.php';
                 dom: 'Bfrtip',
                 buttons: [{
                     extend: 'excel',
-                    text: 'Export to Excel'
+                    text: 'Export to Excel',
+                    action: function(e, dt, button, config) {
+                        var rowCount = dt.rows({
+                            search: 'applied'
+                        }).count();
+
+                        if (rowCount === 0) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'No data available to export',
+                                toast: true,
+                                position: 'top-end',
+                                timer: 3000,
+                                showConfirmButton: false
+                            });
+                        } else {
+                            $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, button, config);
+                        }
+                    }
                 }],
                 drawCallback: function() {
                     $('#leaveTable td').addClass('bg-transparent');
