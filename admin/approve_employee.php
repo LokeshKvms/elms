@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($checkStmt->num_rows > 0) {
             $_SESSION['toast'] = ['msg' => 'Email already exists. Please use a different one.', 'class' => 'bg-danger'];
             $checkStmt->close();
-            header("Location: ".BASE_URL."/admin/approve_employee.php");
+            header("Location: " . BASE_URL . "/admin/approve_employee.php");
             exit;
         }
         $checkStmt->close();
@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['toast'] = ['msg' => 'Employee added successfully.', 'class' => 'bg-success'];
     }
 
-    header("Location: ".BASE_URL."/admin/approve_employee.php");
+    header("Location: " . BASE_URL . "/admin/approve_employee.php");
     exit;
 }
 
@@ -119,7 +119,7 @@ if (isset($_GET['approve'])) {
     }
 
     $_SESSION['toast'] = ['msg' => 'Employee approved.', 'class' => 'bg-success'];
-    header("Location: ".BASE_URL."/admin/approve_employee.php");
+    header("Location: " . BASE_URL . "/admin/approve_employee.php");
     exit;
 }
 
@@ -133,7 +133,7 @@ if (isset($_GET['reject'])) {
     sendMail($emp['email'], $subject, $body);
 
     $_SESSION['toast'] = ['msg' => 'Employee rejected.', 'class' => 'bg-danger'];
-    header("Location: ".BASE_URL."/admin/approve_employee.php");
+    header("Location: " . BASE_URL . "/admin/approve_employee.php");
     exit;
 }
 include COMMON_PATH . '/header.php';
