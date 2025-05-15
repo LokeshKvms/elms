@@ -3,6 +3,7 @@ session_start();
 require dirname(__DIR__) . '/config.php';
 require INCLUDES_PATH . '/db.php';
 require INCLUDES_PATH . '/mail.php';
+require INCLUDES_PATH . '/toast.php';
 
 if (!isset($_SESSION['email']) || !isset($_SESSION['isOk'])) {
     header("Location: " . BASE_URL . "/auth/login.php");
@@ -38,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $role = $row['employee_id'];
 
             if (time() > $otpExpires) {
-                $error = "OTP expired.";
+                toast('error', 'OTP expired.');
             } elseif ($enteredOtp == $storedOtp) {
                 // Clear OTP fields
                 $stmt = $conn->prepare("UPDATE Employees SET otp = NULL, otp_expires = NULL WHERE email = ?");
@@ -50,14 +51,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($role === 1) {
                     header("Location: " . BASE_URL . "/admin/admin_dashboard.php");
                 } else {
+                    toast('success','Welcome to your ELMS portal');
                     header("Location: " . BASE_URL . "/employee/user_dashboard.php");
                 }
                 exit;
             } else {
-                $error = "Invalid OTP.";
+                toast('error', 'Invalid OTP.');
             }
         } else {
-            $error = "User not found.";
+            toast('error', 'User not found');
         }
     } elseif (isset($_POST['resend'])) {
         $otp = rand(100000, 999999);
@@ -68,12 +70,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt->execute()) {
             try {
                 sendmail($email, 'Your OTP for Login', "<h3>Your new OTP is: <strong>$otp</strong></h3>");
-                $success = "OTP resent successfully.";
+                toast('info','OTP has been resent');
             } catch (Exception $e) {
-                $error = "OTP resend failed: " . $mail->ErrorInfo;
+                toast('error', 'OTP resend failed');
             }
         } else {
-            $error = "Failed to update OTP.";
+            toast('error', 'OTP failed to update');
         }
     }
 }
@@ -93,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         function startTimer() {
             resendBtn = document.getElementById("resendBtn");
             resendBtn.disabled = true;
-            let timeLeft = 60;
+            let timeLeft = 3;
             timer = setInterval(() => {
                 if (timeLeft <= 0) {
                     clearInterval(timer);
@@ -113,13 +115,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="d-flex justify-content-center align-items-center vh-100" style="background-color:#F5F7FA;">
     <div class="card p-4 shadow-lg rounded-3" style="max-width: 400px; width: 100%;">
         <h4 class="text-center mb-3">Verify OTP</h4>
-        <?php if (isset($error)): ?>
-            <div class="alert alert-danger"><?= $error ?></div>
-        <?php endif; ?>
-        <?php if (isset($success)): ?>
-            <div class="alert alert-success"><?= $success ?></div>
-        <?php endif; ?>
-
         <form method="post">
             <div class="mb-3">
                 <label for="otp" class="form-label">Enter OTP</label>

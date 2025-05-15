@@ -12,6 +12,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'employee') {
 
 require dirname(__DIR__) . '/config.php';
 require INCLUDES_PATH . '/db.php';
+require INCLUDES_PATH . '/toast.php';
 
 
 $userId = $_SESSION['user_id'];

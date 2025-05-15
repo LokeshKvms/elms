@@ -49,6 +49,7 @@ if (isset($_POST['login'])) {
         $_SESSION['user_id'] = $user['employee_id'];
         $_SESSION['name'] = $user['name'];
         $_SESSION['role'] = 'admin';
+        toast('success','Welcome to your dashboard');
         header("Location: " . BASE_URL . "/admin/admin_dashboard.php");
         exit;
       } else if ($user['status'] === 'active') {
@@ -67,6 +68,7 @@ if (isset($_POST['login'])) {
 
         try {
           sendmail($email, 'Your OTP for Login', "<h3>Your new OTP is: <strong>$otp</strong></h3>");
+          toast('success', 'Login successful. Enter the OTP to continue.');
           header("Location: verify_otp.php");
           exit;
         } catch (Exception $e) {

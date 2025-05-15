@@ -3,6 +3,7 @@ session_start();
 
 require dirname(__DIR__) . '/config.php';
 require INCLUDES_PATH . '/db.php';
+require INCLUDES_PATH . '/toast.php';
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
   header("Location: " . BASE_URL . "/auth/login.php");
