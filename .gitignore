@@ -11,9 +11,9 @@ vendor/
 
 # Ignore environment and config files
 .env
+.htaccess
 .env.local
-config.php
-config/*.php
+
 
 # Ignore logs and temporary files
 *.log
