@@ -128,6 +128,33 @@ include COMMON_PATH . '/header.php';
   <script src="https://cdn.tiny.cloud/1/3g4qn6x3hnpmu6lcwk8usodwmm9zjtgi4ppblgvjg2si6egn/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    .toast-success {
+      background-color: #28a745 !important;
+      color: white !important;
+    }
+
+    .toast-error {
+      background-color: #dc3545 !important;
+      color: white !important;
+    }
+
+    .toast-warning {
+      background-color: #DE7E5D !important;
+      color: white !important;
+    }
+
+    .toast-info {
+      background-color: #17a2b8 !important;
+      color: white !important;
+    }
+
+    .holiday {
+      background-color: #f8d7da !important;
+      color: #721c24 !important;
+    }
+  </style>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       tinymce.init({
@@ -149,24 +176,40 @@ include COMMON_PATH . '/header.php';
       tinymce.triggerSave();
       const content = document.getElementById("reason").value.trim();
       if (content === "") {
-        alert("Please enter a reason for your leave.");
+        Swal.fire({
+          icon: 'warning',
+          title: 'Please enter a reason for your leave.',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          customClass: {
+            popup: `toast-warning`
+          }
+        });
         return false;
       }
       const range = document.getElementById("leave_range").value.trim();
       const dates = range.split(" to ");
       if (dates.length < 1 || !dates[0]) {
-        alert("Please select a valid date range.");
+        Swal.fire({
+          icon: 'warning',
+          title: 'Select valid date range.',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          customClass: {
+            popup: `toast-warning`
+          }
+        });
         return false;
       }
       return true;
     }
   </script>
-  <style>
-    .holiday {
-      background-color: #f8d7da !important;
-      color: #721c24 !important;
-    }
-  </style>
 
 </head>
 
@@ -179,18 +222,29 @@ include COMMON_PATH . '/header.php';
           <div class="card-body">
             <h2 class="card-title text-dark mb-3">Apply for Leave</h2>
 
-            <?php if (!empty($statusMessage)): ?>
-              <div class="position-fixed top-0 end-0 ps-3 ms-3" style="z-index: 1100;">
-                <div class="toast text-white fw-semibold align-items-center bg-success border-0 show" role="alert">
-                  <div class="d-flex">
-                    <div class="toast-body"><?= htmlspecialchars($statusMessage) ?></div>
-                  </div>
-                </div>
-              </div>
+            <?php if (!empty($statusMessage)):
+              $toastType = (str_starts_with($statusMessage, 'Error') || str_starts_with($statusMessage, 'You cannot') || str_starts_with($statusMessage, 'No leave'))
+                ? 'error' : 'success'; ?>
+
               <script>
-                setTimeout(function() {
-                  window.location.href = '<?= $redirectTo ?>';
-                }, 2000);
+                document.addEventListener('DOMContentLoaded', function() {
+                  const type = '<?= $toastType ?>';
+                  Swal.fire({
+                    icon: type,
+                    title: '<?= addslashes($statusMessage) ?>',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    toast: true,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    customClass: {
+                      popup: `toast-${type}`
+                    },
+                    willClose: () => {
+                      window.location.href = '<?= $redirectTo ?>';
+                    }
+                  });
+                });
               </script>
             <?php endif; ?>
 
@@ -260,7 +314,7 @@ include COMMON_PATH . '/header.php';
           const current = new Date(start);
 
           while (current <= end) {
-            const day = current.getDay(); // 0 = Sun, 6 = Sat
+            const day = current.getDay();
             const dateStr = current.toISOString().split('T')[0];
             if (day !== 0 && day !== 6 && !holidays.includes(dateStr)) {
               count++;
@@ -268,21 +322,45 @@ include COMMON_PATH . '/header.php';
             current.setDate(current.getDate() + 1);
           }
 
-          if (count == 0) {
-            alert("You have selected 0 working days.");
+          if (count === 0) {
+            Swal.fire({
+              icon: 'warning',
+              title: 'You have selected Zero Working Days',
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              customClass: {
+                popup: `toast-warning`
+              }
+            });
             instance.clear();
-            document.getElementById('info-text').innerHTML = `Note: Max 3 working days (Mon–Fri). Weekends and holidays are excluded.`;
-          }
-
-          if (count > 3) {
-            alert("You can only apply for a maximum of 3 working days excluding weekends and holidays.");
+            document.getElementById('info-text').innerHTML =
+              `Note: Max 3 working days (Mon–Fri). Weekends and holidays are excluded.`;
+          } else if (count > 3) {
+            Swal.fire({
+              icon: 'warning',
+              title: 'You can apply a max of 3 working days continuosly',
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              customClass: {
+                popup: `toast-warning`
+              }
+            });
             instance.clear();
-            document.getElementById('info-text').innerHTML = `Note: Max 3 working days (Mon–Fri). Weekends and holidays are excluded.`;
+            document.getElementById('info-text').innerHTML =
+              `Note: Max 3 working days (Mon–Fri). Weekends and holidays are excluded.`;
+          } else {
+            document.getElementById('info-text').innerHTML =
+              `No. of days leaves applied: ${count}`;
           }
-
-          document.getElementById('info-text').innerHTML = `No. of days leaves applied : ${count}`;
         }
       }
+
     });
   </script>
 </body>

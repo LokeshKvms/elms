@@ -17,8 +17,8 @@ if (isset($_GET['delete'])) {
   $stmt = $conn->prepare("DELETE FROM Leave_Requests WHERE request_id = ? AND employee_id = ? AND status = 'draft'");
   $stmt->bind_param("ii", $delId, $userId);
   $stmt->execute();
-  header("Location: drafts.php");
-  exit;
+  $message = 'Draft deleted successfully.';
+  $redirectTo = 'drafts.php';
 }
 
 $holidays = [];
@@ -159,6 +159,26 @@ include COMMON_PATH . '/header.php';
   <script src="https://cdn.tiny.cloud/1/3g4qn6x3hnpmu6lcwk8usodwmm9zjtgi4ppblgvjg2si6egn/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 
   <style>
+    .toast-success {
+      background-color: #28a745 !important;
+      color: white !important;
+    }
+
+    .toast-error {
+      background-color: #dc3545 !important;
+      color: white !important;
+    }
+
+    .toast-warning {
+      background-color: #DE7E5D !important;
+      color: white !important;
+    }
+
+    .toast-info {
+      background-color: #17a2b8 !important;
+      color: white !important;
+    }
+
     .holiday {
       background-color: #f8d7da !important;
       color: #721c24 !important;
@@ -170,7 +190,7 @@ include COMMON_PATH . '/header.php';
         selector: 'textarea',
         plugins: ['link', 'table', 'emoticons', 'image'],
         toolbar: 'undo redo | bold italic underline | blocks fontfamily fontsize',
-        content_css: true, // Disable default styles
+        content_css: true,
         height: 300,
         menubar: true,
         setup: function(editor) {
@@ -350,37 +370,70 @@ include COMMON_PATH . '/header.php';
             current.setDate(current.getDate() + 1);
           }
 
-          if (count == 0) {
-            alert("You have selected 0 working days.");
+          if (count === 0) {
+            Swal.fire({
+              icon: 'warning',
+              title: 'You have selected Zero Working Days',
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              customClass: {
+                popup: `toast-warning`
+              }
+            });
             instance.clear();
-            document.getElementById('info-text').innerHTML = `Note: Max 3 working days (Mon–Fri). Weekends and holidays are excluded.`;
-          }
-
-          if (count > 3) {
-            alert("You can only apply for a maximum of 3 working days excluding weekends and holidays.");
+            document.getElementById('info-text').innerHTML =
+              `Note: Max 3 working days (Mon–Fri). Weekends and holidays are excluded.`;
+          } else if (count > 3) {
+            Swal.fire({
+              icon: 'warning',
+              title: 'You can apply a max of 3 working days continuosly',
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              customClass: {
+                popup: `toast-warning`
+              }
+            });
             instance.clear();
-            document.getElementById('info-text').innerHTML = `Note: Max 3 working days (Mon–Fri). Weekends and holidays are excluded.`;
-
+            document.getElementById('info-text').innerHTML =
+              `Note: Max 3 working days (Mon–Fri). Weekends and holidays are excluded.`;
+          } else {
+            document.getElementById('info-text').innerHTML =
+              `No. of days leaves applied: ${count}`;
           }
-          document.getElementById('info-text').innerHTML = `No. of days leaves applied : ${count}`;
         }
       }
     });
   </script>
 
-  <?php if ($message): ?>
-    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
-      <div class="toast align-items-center bg-success text-white border-0 show" role="alert">
-        <div class="d-flex">
-          <div class="toast-body"><?= htmlspecialchars($message) ?></div>
-        </div>
-      </div>
-    </div>
+  <?php if (!empty($message)):
+    $toastType = (str_starts_with($message, 'Error') || str_starts_with($message, 'You cannot') || str_starts_with($message, 'No leave'))
+      ? 'error' : 'success'; ?>
 
     <script>
-      setTimeout(function() {
-        window.location.href = '<?= $redirectTo ?>';
-      }, 3000);
+      document.addEventListener('DOMContentLoaded', function() {
+        const type = '<?= $toastType ?>';
+        Swal.fire({
+          icon: type,
+          title: '<?= htmlspecialchars($message) ?>',
+          position: 'top-end',
+          showConfirmButton: false,
+          toast: true,
+          timer: 2000,
+          timerProgressBar: true,
+          customClass: {
+            popup: `toast-${type}`
+          },
+          willClose: () => {
+            window.location.href = '<?= $redirectTo ?>';
+          }
+        });
+      });
     </script>
   <?php endif; ?>
 </body>
