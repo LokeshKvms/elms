@@ -1,6 +1,7 @@
 <?php
 session_start();
-require dirname(__DIR__) . '/config.php';
+define('BASE_PATH', dirname(__DIR__));
+require BASE_PATH . '/config.php';
 require INCLUDES_PATH . '/db.php';
 require INCLUDES_PATH . '/mail.php';
 require INCLUDES_PATH . '/toast.php';
