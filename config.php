@@ -8,6 +8,6 @@ define('INCLUDES_PATH', BASE_PATH . '/includes');
 define('AUTH_PATH', BASE_PATH.'/auth');
 define('COMMON_PATH', BASE_PATH . '/common');
 
-$baseUrl = "http://localhost/elms";
+$baseUrl = "https://elms-production.up.railway.app";
 define('BASE_URL', $baseUrl);
 // echo BASE_URL;
