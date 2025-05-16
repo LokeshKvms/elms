@@ -2,6 +2,7 @@
 session_start();
 require dirname(__DIR__) . '/config.php';
 require INCLUDES_PATH . '/db.php';
+require INCLUDES_PATH . '/toast.php';
 
 if (isset($_SESSION['role'])) {
   if ($_SESSION['role'] === 'admin') {
@@ -69,6 +70,28 @@ if (isset($_SESSION['role'])) {
       }
     }
   </script>
+  <style>
+    .toast-success {
+      background-color: #28a745 !important;
+      color: white !important;
+    }
+
+    .toast-error {
+      background-color: #dc3545 !important;
+      color: white !important;
+    }
+
+    .toast-warning {
+      background-color: #DE7E5D !important;
+      color: white !important;
+    }
+
+    .toast-info {
+      background-color: #17a2b8 !important;
+      color: white !important;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
     function clearForm() {
@@ -78,16 +101,18 @@ if (isset($_SESSION['role'])) {
     }
 
     function showToast(message, type) {
-      const toastElement = document.createElement('div');
-      toastElement.classList.add('toast', 'position-fixed', 'top-0', 'end-0', 'm-3', 'fade', 'show');
-      toastElement.classList.add(type === 'success' ? 'bg-success' : 'bg-danger');
-      toastElement.innerHTML = `<div class="toast-body text-white">${message}</div>`;
-      document.body.appendChild(toastElement);
-
-      setTimeout(() => {
-        toastElement.classList.remove('show');
-        setTimeout(() => toastElement.remove(), 300);
-      }, 3000);
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: type,
+        title: message,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        customClass: {
+          popup: `toast-${type}`
+        }
+      });
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -210,8 +235,9 @@ if (isset($_SESSION['role'])) {
           $stmt->bind_param("ssisss", $name, $email, $department_id, $position, $hire_date, $password);
 
           if ($stmt->execute()) {
+            toast('info', 'Awaiting Manager approval');
             echo "<script>
-            showToast('Registration successful. Awaiting manager approval.', 'success');
+            showToast('Registration successful.', 'success');
             setTimeout(() => { window.location.href = 'login.php'; }, 2000);
             </script>";
           } else {

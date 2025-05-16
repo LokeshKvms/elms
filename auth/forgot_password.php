@@ -3,10 +3,11 @@ session_start();
 require dirname(__DIR__) . '/config.php';
 require INCLUDES_PATH . '/db.php';
 require INCLUDES_PATH . '/mail.php';
+require INCLUDES_PATH. '/toast.php';
 
 if (isset($_SESSION['role'])) {
     if ($_SESSION['role'] === 'admin') {
-        header("Location: ".BASE_URL."/admin/admin_dashboard.php");
+        header("Location: " . BASE_URL . "/admin/admin_dashboard.php");
         exit;
     } elseif ($_SESSION['role'] === 'employee') {
         header("Location: " . BASE_URL . "/employee/user_dashboard.php");
@@ -35,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $message = "<script>setTimeout(() => showToast('OTP resent successfully.', 'success'), 100);</script>";
                     $showOtpField = true;
                 } catch (Exception $e) {
-                    $message = "<script>setTimeout(() => showToast('Failed to resend OTP.', 'danger'), 100);</script>";
+                    $message = "<script>setTimeout(() => showToast('Failed to resend OTP.', 'error'), 100);</script>";
                 }
             }
         }
@@ -62,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $message = "<script>setTimeout(() => showToast('OTP sent to your email.', 'success'), 100);</script>";
                     $showOtpField = true;
                 } catch (Exception $e) {
-                    $message = "<script>setTimeout(() => showToast('Failed to send OTP.', 'danger'), 100);</script>";
+                    $message = "<script>setTimeout(() => showToast('Failed to send OTP.', 'error'), 100);</script>";
                 }
             } else {
                 // Refetch latest OTP data
@@ -79,16 +80,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $clear = $conn->prepare("UPDATE Employees SET otp = NULL, otp_expires = NULL WHERE email = ?");
                     $clear->bind_param("s", $email);
                     $clear->execute();
-
+                    toast('success','OTP verified successfully. Reset your password.');
                     header("Location: reset_password.php");
                     exit;
                 } else {
                     $showOtpField = true;
-                    $message = "<script>setTimeout(() => showToast('Invalid or expired OTP.', 'danger'), 100);</script>";
+                    $message = "<script>setTimeout(() => showToast('Invalid or expired OTP.', 'error'), 100);</script>";
                 }
             }
         } else {
-            $message = "<script>setTimeout(() => showToast('Email not found.', 'danger'), 100);</script>";
+            $message = "<script>setTimeout(() => showToast('Email not found.', 'error'), 100);</script>";
         }
     }
 }
@@ -99,6 +100,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <head>
     <title>Forgot Password</title>
+    <style>
+        .toast-success {
+            background-color: #28a745 !important;
+            color: white !important;
+        }
+
+        .toast-error {
+            background-color: #dc3545 !important;
+            color: white !important;
+        }
+
+        .toast-warning {
+            background-color: #DE7E5D !important;
+            color: white !important;
+        }
+
+        .toast-info {
+            background-color: #17a2b8 !important;
+            color: white !important;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script>
         let resendBtn;
@@ -122,11 +145,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         function showToast(message, type) {
-            const toast = document.createElement('div');
-            toast.className = `toast position-fixed top-0 end-0 m-3 text-white bg-${type} show`;
-            toast.innerHTML = `<div class="toast-body">${message}</div>`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: type,
+                title: message,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                customClass: {
+                    popup: `toast-${type}`
+                }
+            });
         }
 
         window.onload = startTimer;
