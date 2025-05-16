@@ -19,12 +19,12 @@ function sendMail($to, $subject, $body)
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = $_ENV['SMTP_USER'];
-        $mail->Password = $_ENV['SMTP_PASS'];
+        $mail->Username = $_ENV['SMTP_USER'] ?? getenv('SMTP_USER');
+        $mail->Password = $_ENV['SMTP_PASS'] ?? getenv('SMTP_PASS');
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
-        $mail->setFrom($_ENV['SMTP_USER'], 'Leave Portal');
+        $mail->setFrom($_ENV['SMTP_USER'] ?? getenv('SMTP_USER'), 'Leave Portal');
         $mail->addAddress($to);
 
         $mail->isHTML(true);
