@@ -3,7 +3,7 @@ session_start();
 require dirname(__DIR__) . '/config.php';
 require INCLUDES_PATH . '/db.php';
 require INCLUDES_PATH . '/mail.php';
-require INCLUDES_PATH. '/toast.php';
+require INCLUDES_PATH . '/toast.php';
 
 if (isset($_SESSION['role'])) {
     if ($_SESSION['role'] === 'admin') {
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $clear = $conn->prepare("UPDATE Employees SET otp = NULL, otp_expires = NULL WHERE email = ?");
                     $clear->bind_param("s", $email);
                     $clear->execute();
-                    toast('success','OTP verified successfully. Reset your password.');
+                    toast('success', 'OTP verified successfully. Reset your password.');
                     header("Location: reset_password.php");
                     exit;
                 } else {
@@ -100,6 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <head>
     <title>Forgot Password</title>
+    <link rel="icon" href="../favicon.ico">
     <style>
         .toast-success {
             background-color: #28a745 !important;

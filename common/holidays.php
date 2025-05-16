@@ -2,6 +2,7 @@
   session_start();
   require_once dirname(__DIR__) . '/config.php';
   require INCLUDES_PATH . '/db.php';
+  require INCLUDES_PATH . '/toast.php';
 
   if (!isset($_SESSION['user_id'])) {
     header("Location: " . BASE_URL . "/auth/login.php");
@@ -21,19 +22,21 @@
       $stmt->bind_param("ssi", $holiday_date, $holiday_name, $id);
       $success = $stmt->execute();
       $stmt->close();
-      $_SESSION['toast'] = [
-        'type' => $success ? 'success' : 'danger',
-        'message' => $success ? 'Holiday updated successfully.' : 'Update failed.'
-      ];
+      // $_SESSION['toast'] = [
+      //   'type' => $success ? 'success' : 'error',
+      //   'message' => $success ? 'Holiday updated successfully.' : 'Update failed.'
+      // ];
+      toast($success ? 'success' : 'error', $success ? 'Holiday updated successfully.' : 'Update failed.');
     } else {
       $stmt = $conn->prepare("INSERT INTO holidays (holiday_date, holiday_name) VALUES (?, ?)");
       $stmt->bind_param("ss", $holiday_date, $holiday_name);
       $success = $stmt->execute();
       $stmt->close();
-      $_SESSION['toast'] = [
-        'type' => $success ? 'success' : 'danger',
-        'message' => $success ? 'Holiday added successfully.' : 'Insert failed.'
-      ];
+      // $_SESSION['toast'] = [
+      //   'type' => $success ? 'success' : 'error',
+      //   'message' => $success ? 'Holiday added successfully.' : 'Insert failed.'
+      // ];
+      toast($success ? 'success' : 'error', $success ? 'Holiday added successfully.' : 'Insert failed.');
     }
 
     header("Location: " . $_SERVER['PHP_SELF']);
@@ -43,10 +46,11 @@
   if (isset($_GET['delete'])) {
     $id = (int) $_GET['delete'];
     $success = $conn->query("DELETE FROM holidays WHERE holiday_id = $id");
-    $_SESSION['toast'] = [
-      'type' => $success ? 'success' : 'danger',
-      'message' => $success ? 'Holiday deleted successfully.' : 'Delete failed.'
-    ];
+    // $_SESSION['toast'] = [
+    //   'type' => $success ? 'success' : 'error',
+    //   'message' => $success ? 'Holiday deleted successfully.' : 'Delete failed.'
+    // ];
+    toast($success ? 'warning' : 'error', $success ? 'Holiday deleted successfully.' : 'Delete failed.');
     header("Location: " . $_SERVER['PHP_SELF']);
     exit;
   }
@@ -214,17 +218,6 @@
         document.getElementById('confirmDeleteBtn').href = '?delete=' + id;
         new bootstrap.Toast(toastEl).show();
       }
-
-      <?php if ($toast): ?>
-        window.addEventListener('DOMContentLoaded', () => {
-          const toastBox = document.getElementById('toastBox');
-          const toastMsg = document.getElementById('toastMsg');
-          toastBox.classList.remove('text-bg-primary', 'text-bg-success', 'text-bg-danger', 'text-bg-warning');
-          toastBox.classList.add('text-bg-<?= $toast['type'] ?>');
-          toastMsg.textContent = "<?= addslashes($toast['message']) ?>";
-          new bootstrap.Toast(toastBox).show();
-        });
-      <?php endif; ?>
       $(document).ready(function() {
         $('#holidaysTable').DataTable({
           lengthChange: false,

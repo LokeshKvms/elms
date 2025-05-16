@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $redirect = ($email === 'admin@gmail.com')
                 ? BASE_URL . '/admin/admin_dashboard.php'
                 : BASE_URL . '/employee/user_dashboard.php';
-            toast('success','Password reset successful. Welcome to your dashboard.');
+            toast('success', 'Password reset successful. Welcome to your dashboard.');
             header("Location: $redirect");
             exit;
         } else {
@@ -64,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <title>Reset Password</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="icon" href="../favicon.ico">
     <style>
         .toast-success {
             background-color: #28a745 !important;

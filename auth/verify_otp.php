@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($role === 1) {
                     header("Location: " . BASE_URL . "/admin/admin_dashboard.php");
                 } else {
-                    toast('success','Welcome to your ELMS portal');
+                    toast('success', 'Welcome to your ELMS portal');
                     header("Location: " . BASE_URL . "/employee/user_dashboard.php");
                 }
                 exit;
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt->execute()) {
             try {
                 sendmail($email, 'Your OTP for Login', "<h3>Your new OTP is: <strong>$otp</strong></h3>");
-                toast('info','OTP has been resent');
+                toast('info', 'OTP has been resent');
             } catch (Exception $e) {
                 toast('error', 'OTP resend failed');
             }
@@ -87,6 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Verify OTP</title>
+    <link rel="icon" href="../favicon.ico">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script>
         let resendBtn;

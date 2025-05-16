@@ -46,6 +46,7 @@ if (isset($_POST['login'])) {
       exit;
     } else if (password_verify($password, $user['password'])) {
       if ($role === 'admin' && $email === 'admin@gmail.com') {
+        $_SESSION['login_time'] = time();
         $_SESSION['user_id'] = $user['employee_id'];
         $_SESSION['name'] = $user['name'];
         $_SESSION['role'] = 'admin';
@@ -101,6 +102,7 @@ if (isset($_POST['login'])) {
 <head>
   <meta charset="UTF-8">
   <title>Login - Leave Portal</title>
+  <link rel="icon" href="../favicon.ico">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <script>
     function switchRole(role) {
