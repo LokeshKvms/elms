@@ -27,11 +27,17 @@ Create a database named employee_leave and import the .sql file to dump the data
 ### 4. Configure enviroment varaibles
 In the project root, create a file named .env
 Add your credentials of the mysql database and the email credentials (email address and app password) in the following format :
+
 DB_HOST=localhost
+
 DB_NAME=employee_leave
+
 DB_USER=root
+
 DB_PASSWORD=
+
 SMTP_USER=
+
 SMTP_PASS=
 
 ### 5. Start the development server
