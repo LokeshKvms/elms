@@ -15,8 +15,9 @@ It enables employees to apply for leave and admins to approve or reject requests
 Follow these steps to set up the project locally
 
 ### 1. Clone the repository and move it to htdocs folders
+```bash
 git clone https://github.com/LokeshKvms/elms
-<br>cd elms
+<br>cd elms```
 
 ### 2. Install dependencies
 Use the command `composer install` to install necessary dependencies.
