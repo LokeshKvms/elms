@@ -16,16 +16,16 @@ Follow these steps to set up the project locally
 
 ### 1. Clone the repository and move it to htdocs folders
 git clone https://github.com/LokeshKvms/elms
-cd elms
+<br>cd elms
 
 ### 2. Install dependencies
-composer install
+Use the command `composer install` to install necessary dependencies.
 
 ### 3. Setup database
 Create a database named employee_leave and import the .sql file to dump the data.
 
 ### 4. Configure enviroment varaibles
-In the project root, create a file named .env
+In the project root, create a file named .env <br>
 Add your credentials of the mysql database and the email credentials (email address and app password) in the following format :
 
 DB_HOST=localhost
