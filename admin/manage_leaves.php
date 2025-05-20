@@ -36,7 +36,7 @@ if (isset($_GET['action'], $_GET['id'])) {
                     SET used = used - $restoreDays 
                     WHERE employee_id = {$req['employee_id']} AND leave_type_id = {$req['leave_type_id']}
                   ");
-                    toast('warning','Leave request rejected.');
+                    toast('warning', 'Leave request rejected.');
                 } else {
                     toast('success', 'Leave request approved.');
                 }
@@ -91,6 +91,49 @@ include COMMON_PATH . '/header.php';
         thead th {
             text-align: center !important;
         }
+
+        .swal2-popup.colored-toast {
+            background-color: #DE7E5D;
+            color: #f8f9fa;
+            box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 0.7);
+            font-weight: 600;
+            font-size: 1rem;
+            min-width: 320px;
+            padding: 1rem 1.5rem;
+            border-radius: 0.375rem;
+        }
+
+        .swal2-popup.colored-toast .swal2-confirm {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 0.4rem 1.2rem;
+            font-weight: 600;
+            border-radius: 0.3rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .swal2-popup.colored-toast .swal2-confirm:hover {
+            background-color: #b02a37;
+        }
+
+        .swal2-popup.colored-toast .swal2-cancel {
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+            padding: 0.4rem 1.2rem;
+            font-weight: 600;
+            border-radius: 0.3rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .swal2-popup.colored-toast .swal2-cancel:hover {
+            background-color: #191c24;
+        }
+
+        .swal2-popup.colored-toast .swal2-actions {
+            gap: 0.75rem;
+        }
     </style>
 </head>
 
@@ -136,7 +179,8 @@ include COMMON_PATH . '/header.php';
                         <td><?= $row['requested_at']; ?></td>
                         <td>
                             <a href="manage_leaves.php?action=approve&id=<?= $row['request_id']; ?>" class="btn btn-success btn-sm">Approve</a>
-                            <a href="manage_leaves.php?action=reject&id=<?= $row['request_id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Reject this leave?');">Reject</a>
+                            <button class="btn btn-danger btn-sm btn-reject" data-id="<?= $row['request_id']; ?>">Reject</button>
+
                         </td>
                     </tr>
                 <?php endwhile; ?>
@@ -213,6 +257,34 @@ include COMMON_PATH . '/header.php';
     </footer>
 
     <script>
+        $(document).on('click', '.btn-reject', function(e) {
+            e.preventDefault();
+            const requestId = $(this).data('id');
+
+            Swal.fire({
+                title: "Reject this leave request?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    popup: 'colored-toast',
+                    confirmButton: 'btn btn-sm btn-light me-2',
+                    cancelButton: 'btn btn-sm btn-light'
+                },
+                buttonsStyling: false,
+                position: 'top-end',
+                toast: true,
+                timer: 20000,
+                timerProgressBar: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect to reject URL after confirmation
+                    window.location.href = `manage_leaves.php?action=reject&id=${requestId}`;
+                }
+            });
+        });
+
         if (!$.fn.dataTable.isDataTable('#theTable')) {
             $('#theTable').DataTable({
                 lengthChange: false,
@@ -286,7 +358,6 @@ include COMMON_PATH . '/header.php';
                 table.column(7).search('').draw();
             }
         });
-
     </script>
 </body>
 
