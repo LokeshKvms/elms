@@ -86,10 +86,55 @@
 
     <!-- JSZip (required for Excel export) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
     <style>
       #holidaysTable thead td {
         background-color: #191c24 !important;
         color: #fff;
+      }
+
+      /* Toast container styling */
+      .swal2-popup.colored-toast {
+        background-color: #DE7E5D;
+        color: #f8f9fa;
+        box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 0.7);
+        font-weight: 600;
+        font-size: 1rem;
+        min-width: 320px;
+        padding: 1rem 1.5rem;
+        border-radius: 0.375rem;
+      }
+
+      .swal2-popup.colored-toast .swal2-confirm {
+        background-color: #dc3545;
+        color: #fff;
+        border: none;
+        padding: 0.4rem 1.2rem;
+        font-weight: 600;
+        border-radius: 0.3rem;
+        transition: background-color 0.3s ease;
+      }
+
+      .swal2-popup.colored-toast .swal2-confirm:hover {
+        background-color: #b02a37;
+      }
+
+      .swal2-popup.colored-toast .swal2-cancel {
+        background-color: #6c757d;
+        color: #fff;
+        border: none;
+        padding: 0.4rem 1.2rem;
+        font-weight: 600;
+        border-radius: 0.3rem;
+        transition: background-color 0.3s ease;
+      }
+
+      .swal2-popup.colored-toast .swal2-cancel:hover {
+        background-color: #191c24;
+      }
+
+      .swal2-popup.colored-toast .swal2-actions {
+        gap: 0.75rem;
       }
     </style>
   </head>
@@ -214,10 +259,31 @@
       }
 
       function confirmDelete(id) {
-        const toastEl = document.getElementById('confirmToast');
-        document.getElementById('confirmDeleteBtn').href = '?delete=' + id;
-        new bootstrap.Toast(toastEl).show();
+        const toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'No',
+          customClass: {
+            popup: 'colored-toast',
+          },
+          buttonsStyling: false,
+          icon: 'warning',
+          timer: 20000,
+          timerProgressBar: true
+        });
+
+        toast.fire({
+          title: 'Delete this holiday?',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = '?delete=' + id;
+          }
+        });
       }
+
       $(document).ready(function() {
         $('#holidaysTable').DataTable({
           lengthChange: false,
