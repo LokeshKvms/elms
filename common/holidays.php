@@ -170,26 +170,6 @@
       </div>
     </div>
 
-    <!-- Toasts -->
-    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
-      <div id="toastBox" class="toast align-items-center text-bg-primary border-0" role="alert">
-        <div class="d-flex">
-          <div class="toast-body" id="toastMsg">Loading...</div>
-          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-      </div>
-
-      <div id="confirmToast" class="toast align-items-center text-bg-warning border-0" role="alert">
-        <div class="d-flex justify-content-between">
-          <div class="toast-body fw-semibold">Delete this holiday?</div>
-          <div class="d-flex align-items-center">
-            <a id="confirmDeleteBtn" href="#" class="btn btn-sm btn-light me-2">Yes</a>
-            <button type="button" class="btn btn-sm btn-outline-light me-2" data-bs-dismiss="toast">No</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <main class="container mt-4 flex-grow-1">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>Holiday List</h3>

@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "console.log('Editing employee with ID:'', $(this).data('id'));";
         $stmt = $conn->prepare("UPDATE Employees SET name=?, department_id=?, position=?, hire_date=? WHERE employee_id=?");
         $stmt->bind_param("sissi", $name, $dept, $pos, $date, $id);
-        toast('info','Employee updated successfully');
+        toast('info', 'Employee updated successfully');
         $stmt->execute();
         $stmt->close();
     } else {
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $checkStmt->store_result();
 
         if ($checkStmt->num_rows > 0) {
-            toast('error','Email already exists');
+            toast('error', 'Email already exists');
             $checkStmt->close();
             header("Location: " . BASE_URL . "/admin/manage_employees.php");
             exit;
@@ -184,6 +184,49 @@ include COMMON_PATH . '/header.php';
         .rejectBtn {
             padding-left: 14px !important;
             padding-right: 14px !important;
+        }
+
+        .swal2-popup.colored-toast {
+            background-color: #DE7E5D;
+            color: #f8f9fa;
+            box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 0.7);
+            font-weight: 600;
+            font-size: 1rem;
+            min-width: 320px;
+            padding: 1rem 1.5rem;
+            border-radius: 0.375rem;
+        }
+
+        .swal2-popup.colored-toast .swal2-confirm {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 0.4rem 1.2rem;
+            font-weight: 600;
+            border-radius: 0.3rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .swal2-popup.colored-toast .swal2-confirm:hover {
+            background-color: #b02a37;
+        }
+
+        .swal2-popup.colored-toast .swal2-cancel {
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+            padding: 0.4rem 1.2rem;
+            font-weight: 600;
+            border-radius: 0.3rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .swal2-popup.colored-toast .swal2-cancel:hover {
+            background-color: #191c24;
+        }
+
+        .swal2-popup.colored-toast .swal2-actions {
+            gap: 0.75rem;
         }
     </style>
 </head>
@@ -346,7 +389,7 @@ include COMMON_PATH . '/header.php';
                     [5, 'asc']
                 ],
                 pageLength: 5,
-                dom: 'Bfrtip', 
+                dom: 'Bfrtip',
                 buttons: [{
                     extend: 'excel',
                     text: 'Export to Excel',
@@ -380,23 +423,43 @@ include COMMON_PATH . '/header.php';
 
             let confirmActionUrl = '#';
 
-            function showConfirmToast(message, actionUrl) {
-                $('#confirmToastMsg').text(message);
-                $('#confirmToastYesBtn').attr('href', actionUrl);
-                const toast = new bootstrap.Toast(document.getElementById('confirmToast'));
-                toast.show();
+            function showConfirmDialog(message, confirmText, cancelText, confirmCallback) {
+                Swal.fire({
+                    title: message,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: confirmText,
+                    cancelButtonText: cancelText,
+                    customClass: {
+                        popup: 'colored-toast',
+                        confirmButton: 'btn btn-sm btn-light me-2',
+                        cancelButton: 'btn btn-sm btn-light'
+                    },
+                    buttonsStyling: false,
+                    position: 'top-end',
+                    toast: true,
+                    timer: 20000,
+                    timerProgressBar: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        confirmCallback();
+                    }
+                });
             }
 
-            // Handle Reject click
             $(document).on('click', '.rejectBtn', function() {
                 const empId = $(this).data('id');
-                showConfirmToast('Reject and delete this employee?', '?reject=' + empId);
+                showConfirmDialog('Reject and delete this employee?', 'Yes', 'No', function() {
+                    window.location.href = '?reject=' + empId;
+                });
             });
 
-            // Handle Delete click
+            // Delete employee
             $(document).on('click', '.deleteBtn', function() {
                 const empId = $(this).data('id');
-                showConfirmToast('Delete this employee permanently?', '?delete=' + empId);
+                showConfirmDialog('Delete this employee permanently?', 'Yes', 'No', function() {
+                    window.location.href = '?delete=' + empId;
+                });
             });
 
             $(document).ready(function() {

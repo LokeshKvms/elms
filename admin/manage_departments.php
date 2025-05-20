@@ -134,7 +134,7 @@ include COMMON_PATH . '/header.php';
         }
 
         .swal2-popup.colored-toast .swal2-cancel:hover {
-            background-color: #ffc107;
+            background-color: #191c24;
         }
 
         .swal2-popup.colored-toast .swal2-actions {
@@ -166,19 +166,6 @@ include COMMON_PATH . '/header.php';
                         <button type="submit" class="btn btn-dark">Save</button>
                     </div>
                 </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toasts -->
-    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
-        <div id="confirmToast" class="toast align-items-center text-bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex justify-content-between">
-                <div class="toast-body fw-semibold">Delete this Department?</div>
-                <div class="d-flex align-items-center">
-                    <a id="confirmDeleteBtn" href="#" class="btn btn-sm btn-light me-2">Yes</a>
-                    <button type="button" class="btn btn-sm btn-outline-light me-2" data-bs-dismiss="toast">No</button>
-                </div>
             </div>
         </div>
     </div>
